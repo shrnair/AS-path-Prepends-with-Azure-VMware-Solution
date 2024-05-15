@@ -1,6 +1,6 @@
 # AS-path Prepends with Azure VMware Solution
 
-Goal of this article is to explain As-path prepending behaviors when using ExpressRoute and Azure hubs with Azure VMware Solution
+Goal of this article is to explain As-path prepending behaviors when using ExpressRoute and Azure hubs with Azure VMware Solution and why Public ASNs should be used to prepend towards AVS.
 
 ## Scenario1: Single ExpressRoute Circuit. Use one link as primary and second for failover using prepends with private ASN
 <img width="574" alt="image" src="https://github.com/shrnair/AS-path-Prepends-with-Azure-VMware-Solution/assets/47249875/3fd704e5-7c7b-4511-a9db-b85a35a3a74f">
@@ -94,6 +94,20 @@ How is the route advertised to AVS Edge?
 
 
 The ASNs are still stripped of by the DMSEE. But since both DMSEE have identical routes and both identify Dallas(a and b) as shorter path. Hence the traffic from AVS to On-Prem will always route through Dallas circuit. Unless the routes are lost or the circuit is down.
+
+## Problem:
+
+While everything will route as expected when the all links are up and stable. But lets assume primary link between Onprem and MSEE1 is down and onprem routes are not advertised via MSEE1 to DMSEE1. In this scenario when AVS tries to reach Onprem since it only sees ASN 12076 the traffic mifgt end up on DMSEE1 which has the path via Chicago and not Dallas. As you can see even though the secondary link from Dallas is up the possibility that Chicago path is used is still there.
+
+## Solution:
+
+1. Use Public ASN for prepends as DMSEEs will not strip Public AS and now AVS leaf will be able to identify the best path based on the As-path prepend
+   Here is an example advertised route where Public ASN is maintained
+
+<img width="427" alt="image" src="https://github.com/shrnair/AS-path-Prepends-with-Azure-VMware-Solution/assets/47249875/60cdf83c-2f52-46d1-85d0-41ac54e2d9d2">
+
+
+2. Contact Azure Support who will help implement prepend on the inbound direction of AVS leaf to achieve path preference. This will not be visible to customer and every time any change needs to be done on prepends you need to contact support.
 
 ## Scenario 3:Need internet breakout from AVS to be routed through an Azure hub. Need to have a backup Internet path through another hub.
 
