@@ -97,7 +97,7 @@ The ASNs are still stripped of by the DMSEE. But since both DMSEE have identical
 
 ## Problem:
 
-While everything will route as expected when the all links are up and stable. But lets assume primary link between Onprem and MSEE1 is down and onprem routes are not advertised via MSEE1 to DMSEE1. In this scenario when AVS tries to reach Onprem since it only sees ASN 12076 the traffic mifgt end up on DMSEE1 which has the path via Chicago and not Dallas. As you can see even though the secondary link from Dallas is up the possibility that Chicago path is used is still there.
+While everything will route as expected when the all links are up and stable. But lets assume primary link between Onprem and MSEE1 is down and onprem routes are not advertised via MSEE1 to DMSEE1. In this scenario when AVS tries to reach Onprem since it only sees ASN 12076 the traffic might end up on DMSEE1 which has the path via Chicago and not Dallas. As you can see even though the secondary link from Dallas is up the possibility that Chicago path is used is still there.
 
 ## Solution:
 
